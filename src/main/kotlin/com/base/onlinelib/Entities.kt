@@ -5,15 +5,10 @@ import javax.persistence.*
 import javax.persistence.CascadeType.*
 
 @Entity
-data class Author(val name: String,
+data class Author(var name: String,
                   @ManyToMany(fetch = FetchType.LAZY, cascade = [ALL]) val books: MutableSet<Book> = mutableSetOf(),
                   @GeneratedValue @Id val id: Int = -1)
 {
-    // FIXME: Maybe use @JsonIgnoreProperty
-    override fun toString(): String {
-        return "Author(name='$name', id=$id)"
-    }
-
     fun addBook(book: Book)
     {
         books += book
@@ -25,17 +20,36 @@ data class Author(val name: String,
         books -= book
         book.authors -= this
     }
+
+    // FIXME: Maybe use @JsonIgnoreProperty
+    override fun toString(): String {
+        return "Author(name='$name', id=$id)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Author
+
+        if (name != other.name) return false
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + id
+        return result
+    }
 }
 
 @Entity
-data class Book(val title: String,
+data class Book(var title: String,
            @ManyToMany(mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
            @GeneratedValue @Id val id: Int = -1)
 {
-    override fun toString(): String {
-        return "Book(title='$title', id=$id)"
-    }
-
     fun addAuthor(author: Author)
     {
         authors += author
@@ -47,4 +61,28 @@ data class Book(val title: String,
         authors -= author
         author.books -= this
     }
+
+    override fun toString(): String {
+        return "Book(title='$title', id=$id)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Book
+
+        if (title != other.title) return false
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + id
+        return result
+    }
+
+
 }
