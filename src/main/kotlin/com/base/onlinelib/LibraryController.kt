@@ -11,9 +11,21 @@ class LibraryController(@Autowired val authorRepository: AuthorRepository,
                         @Autowired val bookRepository: BookRepository) {
 
     @GetMapping("/", "/hello")
-    fun mainPage(): ModelAndView {
+    fun greeting(): ModelAndView {
         return ModelAndView("hello")
     }
+
+    @GetMapping("/home")
+    fun mainPage(): ModelAndView {
+        return ModelAndView("home")
+    }
+
+    @GetMapping("/login")
+    fun loginPage(): ModelAndView
+    {
+        return ModelAndView("login")
+    }
+
 
     @GetMapping("/all")
     fun getAll(): ModelAndView {
@@ -137,7 +149,7 @@ class LibraryController(@Autowired val authorRepository: AuthorRepository,
         return "The book with id:$id can not be removed!"
     }
 
-    @GetMapping("/save")
+    @PostMapping("/save")
     fun saveSomeData(): String {
         val author = Author("Huxley")
 
