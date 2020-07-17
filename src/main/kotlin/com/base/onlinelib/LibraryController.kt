@@ -3,56 +3,43 @@ package com.base.onlinelib
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.ModelAndView
 
 // TODO: Probably split the LibController into BookController and AuthorController
 @RestController
 class LibraryController(@Autowired val authorRepository: AuthorRepository,
                         @Autowired val bookRepository: BookRepository) {
 
-    @GetMapping("/")
-    fun mainPage(): String {
-        return "Welcome to our online library!"
+    @GetMapping("/", "/hello")
+    fun mainPage(): ModelAndView {
+        return ModelAndView("hello")
     }
 
     @GetMapping("/all")
-    fun getAll(): String {
-        val books = bookRepository.findAll()
+    fun getAll(): ModelAndView {
         val authors = authorRepository.findAll()
+        val maw = ModelAndView("authorBookList")
+        maw.addObject("authors", authors)
 
-        var info : String = ""
-        for (author in authors) {
-            info += "$author<br>"
-            for (book in author.books) {
-                info += "<span style=margin-left:2em>$book  </span> <br>"
-            }
-            info += "<br>"
-        }
-
-        return info
+        return maw
     }
 
     @GetMapping("/books")
-    fun getAllBooks(): String {
-        val books: List<Book> = bookRepository.findAll()
-        var info : String = ""
-        // TODO: Probably replace with templates
-        books.forEach {
-            info += "$it<br>"
-        }
+    fun getAllBooks(): ModelAndView {
+        val maw = ModelAndView("bookList")
+        val books = bookRepository.findAll()
+        maw.addObject("books", books)
 
-        return info
+        return maw
     }
 
     @GetMapping("/authors")
-    fun getAllAuthors(): String {
-        val authors: List<Author> = authorRepository.findAll()
-        var info : String = ""
-        // TODO: Probably replace with templates
-        authors.forEach {
-            info += "$it<br>"
-        }
+    fun getAllAuthors(): ModelAndView {
+        val maw = ModelAndView("authorList")
+        val authors = authorRepository.findAll()
+        maw.addObject("authors", authors)
 
-        return info
+        return maw
     }
 
     @GetMapping("/authors{id}")
@@ -72,7 +59,6 @@ class LibraryController(@Autowired val authorRepository: AuthorRepository,
         val author = Author(name)
         authorRepository.save(author)
 
-        // FIXME: Wrong id in the message
         return "The author: \n $author \n has been successfully added!"
     }
 
@@ -81,7 +67,6 @@ class LibraryController(@Autowired val authorRepository: AuthorRepository,
         val book = Book(title)
         bookRepository.save(book)
 
-        // FIXME: Wrong id in the message
         return "The book: \n $book \n has been successfully added!"
     }
 
@@ -154,15 +139,15 @@ class LibraryController(@Autowired val authorRepository: AuthorRepository,
 
     @GetMapping("/save")
     fun saveSomeData(): String {
-        val orwell = Author("Orwell")
+        val author = Author("Huxley")
 
-        val nineteen1984 = Book("1984")
-        val flowers = Book("Flowers")
+        val book1 = Book("Brave New World")
+        val book2 = Book("Island")
 
-        orwell.books += nineteen1984
-        orwell.books += flowers
+        author.books += book1
+        author.books += book2
 
-        authorRepository.save(orwell)
+        authorRepository.save(author)
 
         return "Saved!"
     }
