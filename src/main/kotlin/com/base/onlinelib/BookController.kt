@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
+class BookRequest(val title: String)
+
 @RestController
 @RequestMapping("/books")
 class BookController(@Autowired val bookService: BookService,
@@ -33,11 +35,11 @@ class BookController(@Autowired val bookService: BookService,
     }
 
     @PatchMapping("/{id}")
-    fun updateBookTitle(@PathVariable id: Long, @RequestBody title: String): String {
+    fun updateBookTitle(@PathVariable id: Long, @RequestBody bookRequest: BookRequest): String {
         val book = bookService.getByIdOrNull(id)
 
         if (book != null) {
-            book.title = title
+            book.title = bookRequest.title
             bookService.add(book)
             return "The book has been updated <br> $book"
         }

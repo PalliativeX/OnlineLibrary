@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
+class AuthorRequest(val name: String)
+
 @RestController
 @RequestMapping("/authors")
 class AuthorController(@Autowired val authorService: AuthorService,
@@ -33,11 +35,11 @@ class AuthorController(@Autowired val authorService: AuthorService,
     }
 
     @PatchMapping("/{id}")
-    fun updateAuthorName(@PathVariable id: Long, @RequestBody name: String): String {
+    fun updateAuthorName(@PathVariable id: Long, @RequestBody authorRequest: AuthorRequest): String {
         val author = authorService.getByIdOrNull(id)
 
         if (author != null) {
-            author.name = name
+            author.name = authorRequest.name
             authorService.add(author)
             return "Author has been updated <br> $author"
         }
