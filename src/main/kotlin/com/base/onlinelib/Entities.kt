@@ -1,14 +1,15 @@
 package com.base.onlinelib
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 import javax.persistence.CascadeType.*
 
 @Entity
 data class Author(var name: String,
                   @ManyToMany(fetch = FetchType.LAZY, cascade = [ALL]) val books: MutableSet<Book> = mutableSetOf(),
-                  @GeneratedValue @Id val id: Int = -1)
-{
+                  @GeneratedValue @Id val id: Long = -1) {
     fun addBook(book: Book)
     {
         books += book
@@ -21,7 +22,6 @@ data class Author(var name: String,
         book.authors -= this
     }
 
-    // FIXME: Maybe use @JsonIgnoreProperty
     override fun toString(): String {
         return "Author(name='$name', id=$id)"
     }
@@ -40,24 +40,23 @@ data class Author(var name: String,
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + id
+        result = 31 * result + id.hashCode()
         return result
     }
+
 }
+
 
 @Entity
 data class Book(var title: String,
            @ManyToMany(mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
-           @GeneratedValue @Id val id: Int = -1)
-{
-    fun addAuthor(author: Author)
-    {
+           @GeneratedValue @Id val id: Long = -1) {
+    fun addAuthor(author: Author) {
         authors += author
         author.books += this
     }
 
-    fun removeAuthor(author: Author)
-    {
+    fun removeAuthor(author: Author) {
         authors -= author
         author.books -= this
     }
@@ -80,9 +79,8 @@ data class Book(var title: String,
 
     override fun hashCode(): Int {
         var result = title.hashCode()
-        result = 31 * result + id
+        result = 31 * result + id.hashCode()
         return result
     }
-
 
 }
