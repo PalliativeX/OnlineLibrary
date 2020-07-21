@@ -1,5 +1,9 @@
-package com.base.onlinelib
+package com.base.onlinelib.entities
 
+import com.base.onlinelib.entities.Author
+import com.base.onlinelib.entities.AuthorDTO
+import com.base.onlinelib.entities.Book
+import com.base.onlinelib.entities.BookDTO
 import org.springframework.stereotype.Component
 
 @Component

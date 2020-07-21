@@ -1,12 +1,16 @@
 package com.base.onlinelib
 
+import com.base.onlinelib.entities.Author
+import com.base.onlinelib.entities.AuthorService
+import com.base.onlinelib.entities.Book
+import com.base.onlinelib.entities.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
 @RestController
 class LibraryController(@Autowired val authorService: AuthorService,
-                        @Autowired val bookService:   BookService) {
+                        @Autowired val bookService: BookService) {
 
     @GetMapping("/", "/hello")
     fun greeting(): ModelAndView {

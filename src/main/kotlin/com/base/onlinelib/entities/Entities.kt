@@ -1,8 +1,5 @@
-package com.base.onlinelib
+package com.base.onlinelib.entities
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 import javax.persistence.CascadeType.*
 
@@ -49,8 +46,8 @@ data class Author(var name: String,
 
 @Entity
 data class Book(var title: String,
-           @ManyToMany(mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
-           @GeneratedValue @Id val id: Long = -1) {
+                @ManyToMany(mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
+                @GeneratedValue @Id val id: Long = -1) {
     fun addAuthor(author: Author) {
         authors += author
         author.books += this

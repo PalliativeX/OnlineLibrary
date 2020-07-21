@@ -1,5 +1,9 @@
 package com.base.onlinelib
 
+import com.base.onlinelib.entities.Book
+import com.base.onlinelib.entities.BookDTO
+import com.base.onlinelib.entities.BookService
+import com.base.onlinelib.entities.DTOConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
