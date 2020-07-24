@@ -4,14 +4,11 @@ import com.base.onlinelib.entities.Author
 import com.base.onlinelib.entities.AuthorService
 import com.base.onlinelib.entities.Book
 import com.base.onlinelib.entities.BookService
-import com.base.onlinelib.security.PasswordEncoder
 import com.base.onlinelib.security.UserCredentials
-import com.base.onlinelib.security.UserRepository
 import com.base.onlinelib.security.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Configuration
-import org.springframework.stereotype.Component
 
 
 @Configuration
@@ -21,6 +18,7 @@ class AppStartup(@Autowired val userService: UserService,
 
     val preloadUser = false
     val preloadData = false
+    val hello = "hello"
 
     override fun run(vararg args: String) {
 

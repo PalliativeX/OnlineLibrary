@@ -29,8 +29,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72")
 	runtimeOnly("mysql:mysql-connector-java:8.0.20")
+
 	testImplementation("org.springframework.security:spring-security-test:5.3.3.RELEASE")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.1.RELEASE")
+	testImplementation("io.kotest:kotest-runner-junit5-jvm:4.1.3") // for kotest framework
+	testImplementation("io.kotest:kotest-assertions-core-jvm:4.1.3") // for kotest core jvm assertions
+	testImplementation("io.kotest:kotest-property-jvm:4.1.3") // for kotest property test
+	testImplementation("io.kotest:kotest-runner-console-jvm:4.1.3")
 }
 
 tasks.withType<Test> {

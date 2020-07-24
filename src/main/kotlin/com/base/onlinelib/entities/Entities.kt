@@ -5,7 +5,7 @@ import javax.persistence.CascadeType.*
 
 @Entity
 data class Author(var name: String,
-                  @ManyToMany(fetch = FetchType.LAZY, cascade = [ALL]) val books: MutableSet<Book> = mutableSetOf(),
+                  @ManyToMany(fetch = FetchType.EAGER, cascade = [ALL]) val books: MutableSet<Book> = mutableSetOf(),
                   @GeneratedValue @Id val id: Long = -1) {
     fun addBook(book: Book)
     {

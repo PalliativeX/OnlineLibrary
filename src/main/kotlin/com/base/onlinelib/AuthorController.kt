@@ -31,11 +31,11 @@ class AuthorController(@Autowired val authorService: AuthorService,
     }
 
     @PostMapping("/", "")
-    fun addAuthor(@RequestBody name: String): String {
+    fun addAuthor(@RequestBody name: String): Author {
         val author = Author(name)
         authorService.add(author)
 
-        return "The author: \n $author \n has been successfully added!"
+        return author
     }
 
     @PatchMapping("/{id}")
