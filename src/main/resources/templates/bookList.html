@@ -12,10 +12,14 @@
         <tr>
             <th>Title</th>
             <th>Id</th>
+            <th>Publication Year</th>
+            <th>Genre</th>
         </tr>
         <tr th:each ="book : ${books}">
             <td th:utext="${book.title}">...</td>
             <td th:utext="${book.id}">...</td>
+            <td th:utext="${book.publicationYear}">...</td>
+            <td th:utext="${book.genre}">...</td>
         </tr>
     </table>
 </div>

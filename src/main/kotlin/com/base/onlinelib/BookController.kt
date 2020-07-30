@@ -1,18 +1,19 @@
 package com.base.onlinelib
 
-import com.base.onlinelib.entities.Book
-import com.base.onlinelib.entities.BookDTO
-import com.base.onlinelib.entities.BookService
-import com.base.onlinelib.entities.DTOConverter
+import com.base.onlinelib.entities.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
+import java.time.Year
 
 class BookRequest(val title: String)
 
 @RestController
 @RequestMapping("/books")
 class BookController(@Autowired val bookService: BookService,
+                     @Autowired val authorService: AuthorService,
                      @Autowired val dtoConverter: DTOConverter) {
 
     @GetMapping("")
@@ -27,15 +28,34 @@ class BookController(@Autowired val bookService: BookService,
     @GetMapping("/{id}")
     fun getBookById(@PathVariable id: Long): BookDTO? {
         val book = bookService.getByIdOrNull(id)
-        return dtoConverter.convertBookToDto(book)
+
+        return if (book != null)
+            dtoConverter.convertBookToDto(book)
+        else
+            null
+    }
+
+    @GetMapping("/publicationyear")
+    fun getBooksByPublicationYear(@RequestBody year: Year): List<BookDTO> {
+        val pageable = PageRequest.of(0, 10, Sort.by("publicationYear"))
+        val booksByPublicationYear = bookService.findByPublicationYear(year, pageable)
+
+        return dtoConverter.convertBookListToDTOList(booksByPublicationYear)
+    }
+
+    @GetMapping("/bygenre")
+    fun getBooksByGenre(@RequestBody genre: BookGenre): List<BookDTO>? {
+        val pageable = PageRequest.of(0, 10, Sort.by("genre"))
+        val booksByGenre = bookService.findByGenre(genre, pageable)
+
+        return dtoConverter.convertBookListToDTOList(booksByGenre)
     }
 
     @PostMapping("/", "")
-    fun addBook(@RequestBody title: String): String {
-        val book = Book(title)
+    fun addBook(@RequestBody bookDTO: BookDTO): BookDTO {
+        val book = dtoConverter.convertBookDTOToEntity(bookDTO)
         bookService.add(book)
-
-        return "The book: \n $book \n has been successfully added!"
+        return bookDTO
     }
 
     @PatchMapping("/{id}")

@@ -37,7 +37,8 @@ class AuthorizationConfiguration(@Autowired val databaseUserDetailsService: Data
                 .permitAll()
     }
 
-    @Bean fun daoAuthenticationProvider(): AuthenticationProvider {
+    @Bean
+    fun daoAuthenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
         provider.setPasswordEncoder(passwordEncoder)
         provider.setUserDetailsPasswordService(databaseUserDetailPasswordService)

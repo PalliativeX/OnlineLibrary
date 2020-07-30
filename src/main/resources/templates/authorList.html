@@ -12,10 +12,14 @@
         <tr>
             <th>Name</th>
             <th>Id</th>
+            <th>Birthdate</th>
+            <th>Penname</th>
         </tr>
         <tr th:each ="author : ${authors}">
             <td th:utext="${author.name}">...</td>
             <td th:utext="${author.id}">...</td>
+            <td th:utext="${author.birthdate}">...</td>
+            <td th:utext="${author.penname}">...</td>
         </tr>
     </table>
 </div>

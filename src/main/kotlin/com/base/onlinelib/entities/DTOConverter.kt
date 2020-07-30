@@ -1,36 +1,44 @@
 package com.base.onlinelib.entities
 
-import com.base.onlinelib.entities.Author
-import com.base.onlinelib.entities.AuthorDTO
-import com.base.onlinelib.entities.Book
-import com.base.onlinelib.entities.BookDTO
 import org.springframework.stereotype.Component
 
 @Component
 class DTOConverter
 {
-    fun convertBookToDto(book: Book?): BookDTO? {
-        return if (book != null)
-            BookDTO(book.title, book.authors, book.id)
-        else null
+    fun convertBookToDto(book: Book): BookDTO {
+        return BookDTO(book.title, book.publicationYear, book.genre, book.authors, book.id)
     }
 
-    fun convertBookDTOToEntity(bookDTO: BookDTO?): Book? {
-        return if (bookDTO != null)
-            Book(bookDTO.title, bookDTO.authors, bookDTO.id)
-        else null
+    fun convertBookDTOToEntity(bookDTO: BookDTO): Book {
+        return Book(bookDTO.title, bookDTO.publicationYear, bookDTO.genre,  bookDTO.authors, bookDTO.id)
     }
 
-    fun convertAuthorToDto(author: Author?): AuthorDTO? {
-        return if (author != null)
-            AuthorDTO(author.name, author.books, author.id)
-        else null
+    fun convertBookListToDTOList(bookList: List<Book>): List<BookDTO> {
+        val bookDTOs = mutableListOf<BookDTO>()
+
+        for (bookEntity in bookList) {
+            bookDTOs += convertBookToDto(bookEntity)
+        }
+
+        return bookDTOs.toList()
     }
 
-    fun convertAuthorDTOToEntity(authorDTO: AuthorDTO?): Author? {
-        return if (authorDTO != null)
-            Author(authorDTO.name, authorDTO.books, authorDTO.id)
-        else null
+    fun convertAuthorToDto(author: Author): AuthorDTO {
+        return AuthorDTO(author.name, author.birthdate, author.penname, author.books, author.id)
+    }
+
+    fun convertAuthorDTOToEntity(authorDTO: AuthorDTO): Author {
+        return Author(authorDTO.name, authorDTO.birthdate, authorDTO.penname, authorDTO.books, authorDTO.id)
+    }
+
+    fun convertAuthorListToDTOList(authorList: List<Author>): List<AuthorDTO> {
+        val authorDTOs = mutableListOf<AuthorDTO>()
+
+        for (authorEntity in authorList) {
+            authorDTOs += convertAuthorToDto(authorEntity)
+        }
+
+        return authorDTOs.toList()
     }
 
 }
