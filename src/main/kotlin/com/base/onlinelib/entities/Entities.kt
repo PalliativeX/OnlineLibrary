@@ -1,9 +1,13 @@
 package com.base.onlinelib.entities
 
+import org.springframework.data.jpa.domain.Specification
 import java.time.LocalDate
 import java.time.Year
 import javax.persistence.*
 import javax.persistence.CascadeType.ALL
+import javax.persistence.criteria.CriteriaBuilder
+import javax.persistence.criteria.CriteriaQuery
+import javax.persistence.criteria.Root
 
 @Entity
 data class Author(var name: String,
@@ -52,7 +56,6 @@ data class Author(var name: String,
 
 }
 
-
 enum class  BookGenre {
     Drama, Crime, Fantasy, Horror, Action
 }
@@ -61,7 +64,7 @@ enum class  BookGenre {
 data class Book(var title: String,
                 val publicationYear: Year,
                 val genre: BookGenre,
-                @ManyToMany(mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
+                @ManyToMany(fetch = FetchType.EAGER, mappedBy = "books") val authors: MutableSet<Author> = mutableSetOf(),
                 @GeneratedValue @Id val id: Long = -1) {
 
     fun addAuthor(author: Author) {
@@ -99,6 +102,5 @@ data class Book(var title: String,
         result = 31 * result + id.hashCode()
         return result
     }
-
 
 }

@@ -16,7 +16,7 @@ class UserService(@Autowired val userRepository: UserRepository,
     }
 
     fun add(username: String, password: String, role: String, active: Boolean = true) {
-        val user = UserCredentials(username, passwordEncoder.encodePassword(password), role, active)
+        val user = UserCredentials(username, passwordEncoder.encode(password), role, active)
         userRepository.save(user)
     }
 

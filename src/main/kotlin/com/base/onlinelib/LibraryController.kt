@@ -37,15 +37,13 @@ class LibraryController(@Autowired val authorService: AuthorService,
     }
 
     @DeleteMapping("/clear")
-    fun clearAll(): String {
+    fun clearAll() {
         authorService.deleteAllInBatch()
         bookService.deleteAllInBatch()
-
-        return "Cleared!"
     }
 
     @PostMapping("/save")
-    fun saveSomeData(): String {
+    fun saveSomeData() {
         val author = Author("Aldous Leonard Huxley", LocalDate.of(1894, Month.JULY, 26), "Huxley")
 
 
@@ -56,8 +54,6 @@ class LibraryController(@Autowired val authorService: AuthorService,
         author.books += book2
 
         authorService.add(author)
-
-        return "Saved!"
     }
 
 }

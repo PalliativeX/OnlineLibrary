@@ -2,6 +2,7 @@ package com.base.onlinelib.entities
 
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -12,7 +13,7 @@ import javax.persistence.TypedQuery
 
 
 @Repository
-interface AuthorRepository : JpaRepository<Author, Long> {
+interface AuthorRepository : JpaRepository<Author, Long>, JpaSpecificationExecutor<Author> {
 
     @Query(value="FROM Author a WHERE a.name= ?1 AND a.penname= ?2")
     fun findByNamePenname(name: String, penname: String, pageable: Pageable): List<Author>
@@ -25,7 +26,7 @@ interface AuthorRepository : JpaRepository<Author, Long> {
 }
 
 @Repository
-interface BookRepository : JpaRepository<Book, Long> {
+interface BookRepository : JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
     fun findByPublicationYear(year: Year, pageable: Pageable): List<Book>
     fun findByGenre(bookGenre: BookGenre, pageable: Pageable): List<Book>
 }

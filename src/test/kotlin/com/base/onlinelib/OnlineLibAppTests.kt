@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -25,6 +26,7 @@ import org.springframework.http.client.support.BasicAuthorizationInterceptor
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 import java.time.Month
+import java.time.Year
 import java.util.*
 
 
@@ -63,6 +65,29 @@ class OnlineLibAppTests {
     }
 
     @Test
+    fun testGetBooksEndpoint() {
+        val pageable = PageRequest.of(0, 10)
+        val filter = BookFilter(null, null, null, BookGenre.Drama)
+        val page = bookController.getAllBooks(filter, pageable)
+
+        page.forEach { book -> println(book) }
+
+        assertThat(page).isNotEmpty
+    }
+
+    @Test
+    fun testGetAuthorsEndpoint() {
+        val pageable = PageRequest.of(0, 10)
+        val filter = AuthorFilter(null, "Homer",
+                BirthdateRequest(LocalDate.of(0, Month.APRIL, 1), BirthdateRequest.Period.After))
+        val page = authorController.getAuthors(filter, pageable)
+
+        page.forEach { author -> println(author) }
+
+        assertThat(page).isNotEmpty
+    }
+
+    @Test
     fun testQueryBooksByGenre() {
         val pageable = PageRequest.of(0, 10)
         val books = bookService.findByGenre(BookGenre.Drama, pageable)
@@ -91,21 +116,6 @@ class OnlineLibAppTests {
         val authorsAfterBirthdate = authorRepository.findAfterBirthdate(LocalDate.of(0, Month.JANUARY, 10), sortedByBirthate)
 
         assertTrue(authorsAfterBirthdate.isNotEmpty())
-    }
-
-    @Test
-    fun testGetAuthorGenres() {
-        val authors = authorController.getAuthorsByBirthdate(
-                BirthdateRequest(LocalDate.of(1000, Month.APRIL, 1), BirthdateRequest.Period.Before))
-
-        assertTrue(authors.isNotEmpty())
-    }
-
-    @Test
-    fun `test get authors by name and penname`() {
-        val authors = authorController.getAuthorsByNameAndPenname(AuthorNamePennameRequest("Homer", "Homer"))
-
-        assertTrue(authors?.get(0)?.name == "Homer" && authors[0].penname == "Homer")
     }
 
 	@Test

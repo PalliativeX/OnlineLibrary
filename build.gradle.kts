@@ -28,6 +28,8 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72")
+	implementation("au.com.console:kotlin-jpa-specification-dsl:2.0.0-rc.1")
+	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java:8.0.20")
 
 	testImplementation("org.springframework.security:spring-security-test:5.3.3.RELEASE")

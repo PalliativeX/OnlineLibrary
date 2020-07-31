@@ -2,6 +2,7 @@ package com.base.onlinelib
 
 import com.base.onlinelib.entities.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -9,10 +10,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import java.time.LocalDate
+import java.time.Year
 
 class AuthorRequest(val name: String)
-
-class AuthorNamePennameRequest(val name: String, val penname: String)
 
 class BirthdateRequest(val birthdate: LocalDate, val period: Period) {
     enum class Period {
@@ -20,18 +20,16 @@ class BirthdateRequest(val birthdate: LocalDate, val period: Period) {
     }
 }
 
+class AuthorFilter(val name: String? = null, val penname: String? = null, val birthdateRequest: BirthdateRequest? = null)
+
 @RestController
 @RequestMapping("/authors")
 class AuthorController(@Autowired val authorService: AuthorService,
                        @Autowired val dtoConverter: DTOConverter) {
 
-    @GetMapping("")
-    fun getAllAuthors(): ModelAndView {
-        val maw = ModelAndView("authorList")
-        val authors = authorService.getAll()
-        maw.addObject("authors", authors)
-
-        return maw
+    @GetMapping
+    fun getAuthors(filter: AuthorFilter, pageable: Pageable): Page<AuthorDTO> {
+        return authorService.getAll(filter, pageable).map(dtoConverter::convertAuthorToDto)
     }
 
     @GetMapping("/{id}")
@@ -41,42 +39,6 @@ class AuthorController(@Autowired val authorService: AuthorService,
             dtoConverter.convertAuthorToDto(author)
         else
             null
-    }
-
-    @GetMapping("/bynamepenname")
-    fun getAuthorsByNameAndPenname(@RequestBody request: AuthorNamePennameRequest): List<AuthorDTO>? {
-        val pageable = PageRequest.of(0, 10, Sort.by("name"))
-        val authors = authorService.findByNamePenname(request.name, request.penname, pageable)
-
-        return dtoConverter.convertAuthorListToDTOList(authors)
-    }
-
-    @GetMapping("/{id}/bygenre")
-    fun getAuthorBooksByGenre(@PathVariable id: Long, @RequestBody genre: BookGenre): List<BookDTO>? {
-        val author = authorService.getByIdOrNull(id) ?: return null
-
-        val books: MutableList<BookDTO>? = mutableListOf()
-
-        for (book in author.books) {
-            if (book.genre == genre)
-                books?.add(dtoConverter.convertBookToDto(book))
-        }
-
-        return books?.toList()
-    }
-
-    @GetMapping("/bybirthdate")
-    fun getAuthorsByBirthdate(@RequestBody birthdateRequest: BirthdateRequest): List<AuthorDTO> {
-
-        val pageable = PageRequest.of(0, 10, Sort.by("birthdate"))
-        val authorsByBirthdate = if (birthdateRequest.period == BirthdateRequest.Period.Before) {
-            authorService.findBeforeBirthdate(birthdateRequest.birthdate, pageable)
-        }
-        else {
-            authorService.findAfterBirthdate(birthdateRequest.birthdate, pageable)
-        }
-
-        return dtoConverter.convertAuthorListToDTOList(authorsByBirthdate)
     }
 
     @GetMapping("/{id}/genres")
@@ -93,38 +55,38 @@ class AuthorController(@Autowired val authorService: AuthorService,
         return null
     }
 
-    @PostMapping("/", "")
-    fun addAuthor(@RequestBody authorDTO: AuthorDTO): Author {
+    @PostMapping
+    fun addAuthor(@RequestBody authorDTO: AuthorDTO): AuthorDTO {
         val author = dtoConverter.convertAuthorDTOToEntity(authorDTO)
         authorService.add(author)
-        return author
+        return authorDTO
     }
 
     @PatchMapping("/{id}")
-    fun updateAuthorName(@PathVariable id: Long, @RequestBody authorRequest: AuthorRequest): String {
+    fun updateAuthorName(@PathVariable id: Long, @RequestBody authorRequest: AuthorRequest): AuthorDTO? {
         val author = authorService.getByIdOrNull(id)
 
         if (author != null) {
             author.name = authorRequest.name
             authorService.add(author)
-            return "Author has been updated <br> $author"
+            return dtoConverter.convertAuthorToDto(author)
         }
 
-        return "The author with id:$id can not be updated!"
+        return null
     }
 
     @DeleteMapping("/{id}")
-    fun removeAuthorById(@PathVariable id: Long): String {
+    fun removeAuthorById(@PathVariable id: Long): AuthorDTO? {
         val author = authorService.getByIdOrNull(id)
         if (author != null) {
             for (book in author.books) {
                 book.removeAuthor(author)
             }
             authorService.deleteById(id)
-            return "The author with id:$id has been removed!"
+            return dtoConverter.convertAuthorToDto(author)
         }
 
-        return "The author with id:$id can not be removed!"
+        return null
     }
 
 }

@@ -10,7 +10,7 @@ class PasswordEncoderTests {
     fun testPasswordEncoderVersion() {
         val passwordEncoder = PasswordEncoder()
 
-        val encodedPassword = passwordEncoder.encodePassword("password")
+        val encodedPassword = passwordEncoder.encode("password")
         Assert.assertTrue(encodedPassword.startsWith("$2a"))
     }
 }

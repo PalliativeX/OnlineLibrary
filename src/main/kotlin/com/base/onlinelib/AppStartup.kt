@@ -1,6 +1,7 @@
 package com.base.onlinelib
 
 import com.base.onlinelib.entities.*
+import com.base.onlinelib.security.PasswordEncoder
 import com.base.onlinelib.security.UserCredentials
 import com.base.onlinelib.security.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,11 +15,12 @@ import java.time.Year
 @Configuration
 class AppStartup(@Autowired val userService: UserService,
                  @Autowired val authorService: AuthorService,
-                 @Autowired val bookService: BookService) : CommandLineRunner {
+                 @Autowired val bookService: BookService,
+                 @Autowired val passwordEncoder: PasswordEncoder) : CommandLineRunner {
 
-    val clearAllEntityData = false
-    val preloadUser = false
-    val preloadData = false
+    val clearAllEntityData = true
+    val preloadUser = true
+    val preloadData = true
 
     override fun run(vararg args: String) {
 
@@ -30,7 +32,7 @@ class AppStartup(@Autowired val userService: UserService,
 
         // NOTE: Adding a default user to a db
         if (preloadUser) {
-            userService.add(UserCredentials("user", "password", "user", true))
+            userService.add(UserCredentials("user", passwordEncoder.encode("password"), "user", true))
         }
 
         if (preloadData) {

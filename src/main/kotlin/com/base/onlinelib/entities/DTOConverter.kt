@@ -1,5 +1,6 @@
 package com.base.onlinelib.entities
 
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
 @Component
