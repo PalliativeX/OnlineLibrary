@@ -22,27 +22,26 @@ class UserService(@Autowired val userRepository: UserRepository,
 
     fun changeRole(username: String, newRole: String) {
         val user = userRepository.findByUsername(username)
-        if (user != null) {
-            user.role = newRole
-            userRepository.save(user)
+        user?.let {
+            it.role = newRole
+            userRepository.save(it)
         }
     }
 
     fun changeActive(username: String, active: Boolean) {
         val user = userRepository.findByUsername(username)
-        if (user != null) {
-            user.active = active
-            userRepository.save(user)
+        user?.let {
+            it.active = active
+            userRepository.save(it)
         }
     }
 
     fun removeByUsername(username: String): Boolean {
         val user = userRepository.findByUsername(username)
-        if (user != null) {
-            userRepository.delete(user)
+        user?.let {
+            userRepository.delete(it)
             return true
         }
-
         return false
     }
 

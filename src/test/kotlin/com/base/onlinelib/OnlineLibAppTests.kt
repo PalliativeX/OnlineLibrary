@@ -1,40 +1,29 @@
 package com.base.onlinelib
 
-import com.base.onlinelib.entities.*
-import com.base.onlinelib.security.PasswordEncoder
+import com.base.onlinelib.entities.AuthorRepository
+import com.base.onlinelib.entities.BookGenre
+import com.base.onlinelib.entities.BookService
 import com.base.onlinelib.security.UserRepository
 import io.kotest.assertions.assertSoftly
-import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.collections.shouldStartWith
-import io.kotest.matchers.maps.beEmpty
 import io.kotest.matchers.shouldNotBe
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.http.client.support.BasicAuthorizationInterceptor
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 import java.time.Month
-import java.time.Year
-import java.util.*
 
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class OnlineLibAppTests {
 
-    val url = "http://localhost:8080/"
+    //val url = "http://localhost:8080/"
     //val testRestTemplate: TestRestTemplate = TestRestTemplate("user", passwordEncoder.encodePassword("password"))
 
     @Autowired
@@ -51,12 +40,8 @@ class OnlineLibAppTests {
     @Autowired
     lateinit var bookService: BookService
 
-    @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
-
     @Test
     fun contextLoads() {
-
         assertSoftly {
             authorController shouldNotBe (null)
             bookController shouldNotBe (null)
@@ -97,7 +82,7 @@ class OnlineLibAppTests {
     @Test
     fun testQueryAuthorRepositoryByNamePenname() {
         val sortedByName = PageRequest.of(0, 10, Sort.by("name"))
-        val authorsByNamePenname = authorRepository.findByNamePenname("Homer", "Homer", sortedByName)
+        val authorsByNamePenname = authorRepository.findByNameAndPenname("Homer", "Homer", sortedByName)
 
         assertTrue(authorsByNamePenname[0].name == "Homer" && authorsByNamePenname[0].penname == "Homer")
     }
@@ -116,18 +101,6 @@ class OnlineLibAppTests {
         val authorsAfterBirthdate = authorRepository.findAfterBirthdate(LocalDate.of(0, Month.JANUARY, 10), sortedByBirthate)
 
         assertTrue(authorsAfterBirthdate.isNotEmpty())
-    }
-
-	@Test
-	fun testGetAuthorById() {
-		val author = authorController.getAuthorById(24)
-		assertNotNull(author?.name)
-	}
-
-    @Test
-    fun testAddAuthor() {
-        val authorDTO = authorController.addAuthor(AuthorDTO("Publius Vergilius Maro", LocalDate.of(70, Month.OCTOBER, 15), "Virgil"))
-        assertTrue(authorDTO.penname == "Virgil")
     }
 
     @Test

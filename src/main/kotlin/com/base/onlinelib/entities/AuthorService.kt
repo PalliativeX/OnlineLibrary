@@ -1,9 +1,11 @@
 package com.base.onlinelib.entities
 
-import au.com.console.jpaspecificationdsl.*
+import au.com.console.jpaspecificationdsl.and
+import au.com.console.jpaspecificationdsl.equal
+import au.com.console.jpaspecificationdsl.greaterThanOrEqualTo
+import au.com.console.jpaspecificationdsl.lessThanOrEqualTo
 import com.base.onlinelib.AuthorFilter
 import com.base.onlinelib.BirthdateRequest
-import com.base.onlinelib.BookFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -12,16 +14,14 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
-class AuthorFilter(val name: String? = null, val penname: Author? = null, val birthdateRequest: BirthdateRequest? = null)
-
 @Service
 class AuthorService(@Autowired val authorRepository: AuthorRepository) {
 
     fun getAll(filter: AuthorFilter, pageable: Pageable): Page<Author> {
 
-        var nameEqual: Specification<Author>? = Specification.where(null)
-        var pennameEqual: Specification<Author>? = Specification.where(null)
-        var birthdateSpec: Specification<Author>? = Specification.where(null)
+        var nameEqual     = Specification.where<Author>(null)
+        var pennameEqual  = Specification.where<Author>(null)
+        var birthdateSpec = Specification.where<Author>(null)
 
         if (filter.name != null) {
             nameEqual = Author::name.equal(filter.name)
@@ -53,7 +53,7 @@ class AuthorService(@Autowired val authorRepository: AuthorRepository) {
     }
 
     fun findByNamePenname(name: String, penname: String, pageable: Pageable): List<Author> {
-        return authorRepository.findByNamePenname(name, penname, pageable)
+        return authorRepository.findByNameAndPenname(name, penname, pageable)
     }
 
     fun findBeforeBirthdate(birthdate: LocalDate, pageable: Pageable): List<Author> {

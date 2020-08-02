@@ -1,6 +1,5 @@
 package com.base.onlinelib.entities
 
-import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,13 +14,7 @@ class DTOConverter
     }
 
     fun convertBookListToDTOList(bookList: List<Book>): List<BookDTO> {
-        val bookDTOs = mutableListOf<BookDTO>()
-
-        for (bookEntity in bookList) {
-            bookDTOs += convertBookToDto(bookEntity)
-        }
-
-        return bookDTOs.toList()
+        return bookList.map(this::convertBookToDto)
     }
 
     fun convertAuthorToDto(author: Author): AuthorDTO {
@@ -33,13 +26,7 @@ class DTOConverter
     }
 
     fun convertAuthorListToDTOList(authorList: List<Author>): List<AuthorDTO> {
-        val authorDTOs = mutableListOf<AuthorDTO>()
-
-        for (authorEntity in authorList) {
-            authorDTOs += convertAuthorToDto(authorEntity)
-        }
-
-        return authorDTOs.toList()
+        return authorList.map(this::convertAuthorToDto)
     }
 
 }

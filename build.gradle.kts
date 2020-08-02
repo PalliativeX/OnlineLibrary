@@ -29,8 +29,10 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72")
 	implementation("au.com.console:kotlin-jpa-specification-dsl:2.0.0-rc.1")
+	//implementation("org.modelmapper:modelmapper:0.7.5")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java:8.0.20")
+
 
 	testImplementation("org.springframework.security:spring-security-test:5.3.3.RELEASE")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.1.RELEASE")

@@ -15,8 +15,7 @@ import javax.persistence.TypedQuery
 @Repository
 interface AuthorRepository : JpaRepository<Author, Long>, JpaSpecificationExecutor<Author> {
 
-    @Query(value="FROM Author a WHERE a.name= ?1 AND a.penname= ?2")
-    fun findByNamePenname(name: String, penname: String, pageable: Pageable): List<Author>
+    fun findByNameAndPenname(name: String, penname: String, pageable: Pageable): List<Author>
 
     @Query(value="FROM Author a WHERE a.birthdate< ?1")
     fun findBeforeBirthdate(birthdate: LocalDate, pageable: Pageable): List<Author> // NOTE: before the date

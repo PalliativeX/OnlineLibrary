@@ -30,8 +30,9 @@ class LibraryController(@Autowired val authorService: AuthorService,
     @GetMapping("/all")
     fun getAll(): ModelAndView {
         val authors = authorService.getAll()
-        val maw = ModelAndView("authorBookList")
-        maw.addObject("authors", authors)
+        val maw = ModelAndView("authorBookList").apply {
+            addObject("authors", authors)
+        }
 
         return maw
     }
@@ -44,14 +45,13 @@ class LibraryController(@Autowired val authorService: AuthorService,
 
     @PostMapping("/save")
     fun saveSomeData() {
-        val author = Author("Aldous Leonard Huxley", LocalDate.of(1894, Month.JULY, 26), "Huxley")
-
-
         val book1 = Book("Brave New World", Year.of(1932), BookGenre.Drama)
         val book2 = Book("Island", Year.of(1962), BookGenre.Drama)
 
-        author.books += book1
-        author.books += book2
+        val author = Author("Aldous Leonard Huxley", LocalDate.of(1894, Month.JULY, 26), "Huxley").apply {
+            books += book1
+            books += book2
+        }
 
         authorService.add(author)
     }

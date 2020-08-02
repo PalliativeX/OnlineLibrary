@@ -8,8 +8,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Year
-
-import au.com.console.jpaspecificationdsl.*   // 1. Import Kotlin magic
+import au.com.console.jpaspecificationdsl.*
 
 @Service
 class BookService(@Autowired val bookRepository: BookRepository) {
@@ -23,26 +22,33 @@ class BookService(@Autowired val bookRepository: BookRepository) {
     }
 
     fun getAll(filter: BookFilter, pageable: Pageable): Page<Book> {
-        var genreEqual: Specification<Book>? = Specification.where(null)
-        var titleEqual: Specification<Book>? = Specification.where(null)
-        var publicationYearEqual: Specification<Book>? = Specification.where(null)
-        var authorsEqual: Specification<Book>? = Specification.where(null)
 
-        if (filter.genre != null) {
-            genreEqual = Book::genre.equal(filter.genre)
+        val genreEqual = if (filter.genre != null) {
+            Book::genre.equal(filter.genre)
+        } else {
+            Specification.where<Book>(null)
         }
-        if (filter.title != null) {
-            titleEqual = Book::title.equal(filter.title)
+
+        val titleEqual = if (filter.title != null) {
+            Book::title.equal(filter.title)
+        } else {
+            Specification.where<Book>(null)
         }
-        if (filter.year != null) {
-            publicationYearEqual = Book::publicationYear.equal(filter.year)
+
+        val publicationYearEqual = if (filter.year != null) {
+            Book::publicationYear.equal(filter.year)
+        } else {
+            Specification.where<Book>(null)
         }
-        if (filter.author != null) {
-            authorsEqual = Book::authors.isMember(filter.author)
+
+        val authorsEqual = if (filter.author != null) {
+            Book::authors.isMember(filter.author)
+        } else {
+            Specification.where<Book>(null)
         }
 
         return bookRepository.findAll(
-                Specification.where(genreEqual!! and titleEqual!! and publicationYearEqual!! and authorsEqual!!), pageable)
+              Specification.where(genreEqual!! and titleEqual!! and publicationYearEqual!! and authorsEqual!!), pageable)
     }
 
     fun getByIdOrNull(id: Long): Book? {
